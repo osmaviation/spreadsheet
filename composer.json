@@ -1,0 +1,32 @@
+{
+  "name": "osmaviation/spreadsheet",
+  "description": "A simple wrapper around PHP Spreadsheet",
+  "authors": [
+    {
+      "name": "Tor Morten Jensen",
+      "email": "tormorten.jensen@osmaviation.com"
+    }
+  ],
+  "require": {
+    "phpoffice/phpspreadsheet": "^1.3.1"
+  },
+  "require-dev": {
+  },
+  "autoload": {
+    "psr-4": {
+      "OSMAviation\\Spreadsheet\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "OSMAviation\\Spreadsheet\\SpreadsheetServiceProvider"
+      ]
+    }
+  }
+}
