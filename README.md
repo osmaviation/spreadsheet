@@ -1,6 +1,6 @@
 # Spreadsheet
 
-A simple Laravel abstraction to the PHPSpreadsheet library. Only supports writing.
+A simple Laravel abstraction to the PHPSpreadsheet (previously PHPExcel) library, ideal for writing XLSX (Excel) files. 
 
 ## Installing
 
@@ -76,6 +76,16 @@ Spreadsheet::create($filename, function ($excel) {
         ], null, 'A1', true, false);
     });
 })->store('local');
+```
+
+### Loading a file
+
+```php
+Spreadsheet::load($filename, function ($excel) {
+    $excel->sheet('Some existing sheet', function($sheet) {
+        //
+    });
+})
 ```
 
 ### Accessing a PHPSpreadsheet spreadsheet
