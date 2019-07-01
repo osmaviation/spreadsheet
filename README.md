@@ -62,8 +62,6 @@ class MyController
 
 ### Saving the spreadsheet
 
-The package currently supports writing to any local disk. 
-
 ```php
 $filename = 'some-folder/my-filename.xlsx';
 
