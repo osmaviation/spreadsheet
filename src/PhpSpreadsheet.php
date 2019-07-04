@@ -79,8 +79,10 @@ class PhpSpreadsheet
             $this->spreadsheet->getSheetByName('Worksheet')
         );
         $this->spreadsheet->removeSheetByIndex($sheetIndex);
-
-        File::makeDirectory(storage_path('spreadsheetTmp/'));
+        
+        if (!File::isDirectory(storage_path('spreadsheetTmp/'))) {
+            File::makeDirectory(storage_path('spreadsheetTmp/'));
+        }
 
         $tmpFile = storage_path('spreadsheetTmp/' . str_random(20));
         $this->writer->save($tmpFile);
