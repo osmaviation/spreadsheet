@@ -39,6 +39,10 @@ class SpreadsheetServiceProvider extends ServiceProvider
     protected function registerCache()
     {
         $this->app->bind('spreadsheet.pool', function ($app) {
+            if ($app->make('config')->get('cache.default', 'file') !== 'redis') {
+                return null;
+            }
+            
             $config = $app->make('config')->get('database.redis', []);
             $client = Arr::pull($config, 'client', 'predis');
 
