@@ -2,6 +2,7 @@
 
 namespace OSMAviation\Spreadsheet;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
 use Cache\Adapter\Predis\PredisCachePool;
 use Cache\Adapter\Redis\RedisCachePool;
@@ -38,10 +39,20 @@ class SpreadsheetServiceProvider extends ServiceProvider
     protected function registerCache()
     {
         $this->app->bind('spreadsheet.pool', function ($app) {
-            if (!isset($app['redis.connection'])) {
+            $config = $app->make('config')->get('database.redis', []);
+            $client = Arr::pull($config, 'client', 'predis');
+
+            if ($client === 'predis' && !class_exists(\Predis\Client::class)) {
                 return null;
             }
 
+            if ($client === 'phpredis' && !class_exists(\Redis::class)) {
+                return null;
+            }
+
+            if (!isset($app['redis'])) {
+                return null;
+            }
             $client = $app['redis.connection']->client();
 
             if ($client instanceof \Redis) {
