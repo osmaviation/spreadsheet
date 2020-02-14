@@ -42,7 +42,7 @@ class SpreadsheetServiceProvider extends ServiceProvider
             if ($app->make('config')->get('cache.default', 'file') !== 'redis') {
                 return null;
             }
-            
+
             $config = $app->make('config')->get('database.redis', []);
             $client = Arr::pull($config, 'client', 'predis');
 
@@ -76,5 +76,10 @@ class SpreadsheetServiceProvider extends ServiceProvider
             }
             return new SimpleCacheBridge($app['spreadsheet.pool']);
         });
+    }
+
+    public function provides()
+    {
+        return ['spreadsheet', 'spreadsheet.cacheBridge', 'spreadsheet.pool'];
     }
 }

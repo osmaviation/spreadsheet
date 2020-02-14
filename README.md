@@ -83,7 +83,17 @@ Spreadsheet::load($filename, function ($excel) {
     $excel->sheet('Some existing sheet', function($sheet) {
         //
     });
-})
+});
+```
+
+You can also pass the disk name as the second argument to the `load` method to load files from a different file system.
+
+```php
+Spreadsheet::load($filename, 's3', function ($excel) {
+    $excel->sheet('Some sheet', function($sheet) {
+        //
+    });
+});
 ```
 
 ### Accessing a PHPSpreadsheet spreadsheet

@@ -55,7 +55,7 @@ class PhpSpreadsheet
      * @param $callback
      * @return $this
      */
-    public function create($filename, $callback)
+    public function create($filename, $callback = null)
     {
         $this->filename = $filename;
         if (File::extension($filename) === 'xls') {
@@ -67,34 +67,6 @@ class PhpSpreadsheet
         return $this;
     }
 
-    /**
-     * Stores the Excel spreadsheet to disk
-     *
-     * @param $disk
-     * @return $this
-     */
-    public function store($disk)
-    {
-        $sheetIndex = $this->spreadsheet->getIndex(
-            $this->spreadsheet->getSheetByName('Worksheet')
-        );
-        $this->spreadsheet->removeSheetByIndex($sheetIndex);
-        
-        if (!File::isDirectory(storage_path('spreadsheetTmp/'))) {
-            File::makeDirectory(storage_path('spreadsheetTmp/'));
-        }
-
-        $tmpFile = storage_path('spreadsheetTmp/' . str_random(20));
-        $this->writer->save($tmpFile);
-
-        Storage::disk($disk)->put($this->filename, file_get_contents($tmpFile));
-
-        File::delete($tmpFile);
-        File::deleteDirectory(storage_path('spreadsheetTmp/'));
-
-        return $this;
-    }
-
 
     /**
      * Load Excel file
@@ -102,14 +74,73 @@ class PhpSpreadsheet
      * @param $cb
      * @return $this
      */
-    public function load($filename, $callback)
+    public function load($filename, $disk = null, $callback = null)
     {
+
+        if (!$callback) {
+            $callback = $disk;
+            $disk = null;
+        }
+
         $this->filename = $filename;
         $fileType = ucfirst(File::extension($filename));
 
-        $this->reader = IOFactory::createReader($fileType);
-        $this->reader = $this->reader->load($filename);
-        $callback($this->reader);
+        if ($disk) {
+            if (!File::isDirectory(storage_path('spreadsheetTmp/'))) {
+                File::makeDirectory(storage_path('spreadsheetTmp/'));
+            }
+
+            $tmpFile = storage_path('spreadsheetTmp/' . str_random(20));
+            $content = Storage::disk($disk)->get($filename);
+            File::put($tmpFile, $content);
+            $filename = $tmpFile;
+        }
+
+        $this->spreadsheet = IOFactory::load($filename);
+        $this->spreadsheet->setActiveSheetIndex(0);
+        $this->writer = IOFactory::createWriter($this->spreadsheet, $fileType);
+
+        File::deleteDirectory(storage_path('spreadsheetTmp/'));
+
+        $callback(new Spreadsheet($this->spreadsheet));
+
+        return $this;
+    }
+
+    /**
+     * Stores the Excel spreadsheet to disk
+     *
+     * @param $disk
+     * @return $this
+     */
+    public function store($disk, $filename = null)
+    {
+        if (!$filename) {
+            $filename = $this->filename;
+        }
+
+        if ($sheet = $this->spreadsheet->getSheetByName('Worksheet')) {
+            $sheetIndex = $this->spreadsheet->getIndex(
+                $sheet
+            );
+            $this->spreadsheet->removeSheetByIndex($sheetIndex);
+        }
+
+        // we will temporarily store the file on the local
+        // filesystem before moving it to the selected disk
+
+        if (!File::isDirectory(storage_path('spreadsheetTmp/'))) {
+            File::makeDirectory(storage_path('spreadsheetTmp/'));
+        }
+        $tmpFile = storage_path('spreadsheetTmp/' . str_random(20));
+
+        $this->writer->save($tmpFile);
+        $file = Storage::disk($disk)->put($filename, file_get_contents($tmpFile));
+
+        File::delete($tmpFile);
+        File::deleteDirectory(storage_path('spreadsheetTmp/'));
+
+        $this->filename = $filename;
 
         return $this;
     }
