@@ -108,6 +108,24 @@ class PhpSpreadsheet
     }
 
     /**
+     * Load Excel file
+     * @param $filename
+     * @param $cb
+     * @return $this
+     */
+    public function read($filename, $callback)
+    {
+        $this->filename = $filename;
+        $fileType = ucfirst(File::extension($filename));
+
+        $this->reader = IOFactory::createReader($fileType);
+        $this->reader = $this->reader->load($filename);
+        $callback($this->reader);
+
+        return $this;
+    }
+
+    /**
      * Stores the Excel spreadsheet to disk
      *
      * @param $disk
