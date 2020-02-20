@@ -29,10 +29,12 @@ class SpreadsheetServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        $this->registerCache();
+        if ($this->app->make('config')->get('spreadsheet.cache', false)) {
+            $this->registerCache();
 
-        if ($bridge = $this->app['spreadsheet.cacheBridge']) {
-            SpreadsheetSettings::setCache($bridge);
+            if ($bridge = $this->app['spreadsheet.cacheBridge']) {
+                SpreadsheetSettings::setCache($bridge);
+            }
         }
     }
 

@@ -36,7 +36,7 @@ class Spreadsheet
         $sheet = $this->spreadsheet->getSheetByName($name);
         if (!$sheet) {
             $sheet = new Worksheet($this->spreadsheet, $name);
-            $this->spreadsheet->addSheet($sheet, 0);
+            $this->spreadsheet->addSheet($sheet);
         }
         $callback($sheet);
         return $this;

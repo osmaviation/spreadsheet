@@ -97,7 +97,9 @@ class PhpSpreadsheet
         }
 
         $this->spreadsheet = IOFactory::load($filename);
-//        $this->spreadsheet->setActiveSheetIndex(0);
+        if ($fileType === 'Xlsx') {
+            $this->spreadsheet->setActiveSheetIndex(0);
+        }
         $this->writer = IOFactory::createWriter($this->spreadsheet, $fileType);
 
         File::deleteDirectory(storage_path('spreadsheetTmp/'));
@@ -138,9 +140,7 @@ class PhpSpreadsheet
         }
 
         if ($sheet = $this->spreadsheet->getSheetByName('Worksheet')) {
-            $sheetIndex = $this->spreadsheet->getIndex(
-                $sheet
-            );
+            $sheetIndex = $this->spreadsheet->getIndex($sheet);
             $this->spreadsheet->removeSheetByIndex($sheetIndex);
         }
 
