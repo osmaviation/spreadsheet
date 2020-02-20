@@ -97,7 +97,7 @@ class PhpSpreadsheet
         }
 
         $this->spreadsheet = IOFactory::load($filename);
-        $this->spreadsheet->setActiveSheetIndex(0);
+//        $this->spreadsheet->setActiveSheetIndex(0);
         $this->writer = IOFactory::createWriter($this->spreadsheet, $fileType);
 
         File::deleteDirectory(storage_path('spreadsheetTmp/'));
