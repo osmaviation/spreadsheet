@@ -151,7 +151,7 @@ class PhpSpreadsheet
             File::makeDirectory(storage_path('spreadsheetTmp/'));
         }
         $tmpFile = storage_path('spreadsheetTmp/' . str_random(20));
-        
+
         if (count($this->spreadsheet->getAllSheets()) > 0) {
             $this->spreadsheet->setActiveSheetIndex(0);
         }
