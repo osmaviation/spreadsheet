@@ -10,9 +10,9 @@
   "require": {
     "phpoffice/phpspreadsheet": "^5.0",
     "illuminate/support": ">=5.5",
-    "cache/simple-cache-bridge": "^1.0.0",
-    "cache/predis-adapter": "^1.0.0",
-    "cache/redis-adapter": "^1.0.0"
+    "cache/simple-cache-bridge": "^2.0",
+    "cache/predis-adapter": "^3.0",
+    "cache/redis-adapter": "^3.0"
   },
   "require-dev": {
   },
